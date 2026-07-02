@@ -11,7 +11,7 @@ OBJDIR   = obj
 
 # --- Flags ---
 ARCHFLAGS = -target arm-none-eabi -mcpu=arm7tdmi
-CFLAGS    = -Wall $(ARCHFLAGS) -ffreestanding -I$(INCDIR) -O2
+CFLAGS    = -Wall $(ARCHFLAGS) -mthumb -ffreestanding -I$(INCDIR) -O2
 
 # --- Targets and Files ---
 TARGET = PROJECT_NAME.gba
