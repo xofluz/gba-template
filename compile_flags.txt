@@ -1,0 +1,6 @@
+-target
+arm-none-eabi
+-mcpu=arm7tdmi
+-ffreestanding
+-Wall
+-Iinclude
