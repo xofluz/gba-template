@@ -24,8 +24,8 @@ ARCHFLAGS = -target arm-none-eabi -mcpu=arm7tdmi
 CFLAGS    = -Wall $(ARCHFLAGS) -mthumb -ffreestanding -I$(INCDIR) -Os
 
 # --- Targets and Files ---
-TARGET  = $(BINDIR)/hello.gba
-ELF     = $(BINDIR)/hello.elf
+TARGET  = $(BINDIR)/PROJECT_NAME.gba
+ELF     = $(BINDIR)/PROJECT_NAME.elf
 CSRCS   = $(wildcard $(SRCDIR)/*.c)
 SSRCS   = $(wildcard $(SRCDIR)/*.s)
 OBJS    = $(CSRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o) $(SSRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
