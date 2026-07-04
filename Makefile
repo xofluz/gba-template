@@ -7,15 +7,25 @@ GBAFIX   = gbafix
 # --- Directories ---
 SRCDIR   = src
 INCDIR   = include
-OBJDIR   = obj
+
+BUILDDIR = build
+MODE    ?= release
+
+OBJDIR   = $(BUILDDIR)/$(MODE)/obj
+BINDIR   = $(BUILDDIR)/$(MODE)/bin
+
+DEBUG_FLAGS = -g -O0
+ifeq ($(MODE),debug)
+CFLAGS += $(DEBUG_FLAGS)
+endif
 
 # --- Flags ---
 ARCHFLAGS = -target arm-none-eabi -mcpu=arm7tdmi
-CFLAGS    = -Wall $(ARCHFLAGS) -mthumb -ffreestanding -I$(INCDIR) -O2
+CFLAGS    = -Wall $(ARCHFLAGS) -mthumb -ffreestanding -I$(INCDIR) -Os
 
 # --- Targets and Files ---
-TARGET = PROJECT_NAME.gba
-ELF    = PROJECT_NAME.elf
+TARGET  = $(BINDIR)/hello.gba
+ELF     = $(BINDIR)/hello.elf
 CSRCS   = $(wildcard $(SRCDIR)/*.c)
 SSRCS   = $(wildcard $(SRCDIR)/*.s)
 OBJS    = $(CSRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o) $(SSRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
@@ -23,12 +33,18 @@ OBJS    = $(CSRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o) $(SSRCS:$(SRCDIR)/%.s=$(OBJDIR)/%
 # --- Standard Rule ---
 all: $(TARGET)
 
-$(TARGET): $(ELF)
+debug:
+	$(MAKE) MODE=debug
+
+$(TARGET): $(ELF) | $(BINDIR)
 	$(OBJCOPY) -O binary $(ELF) $(TARGET)
 	$(GBAFIX) $(TARGET)
 
-$(ELF): $(OBJS)
+$(ELF): $(OBJS) | $(BINDIR)
 	$(LLD) -T gba.ld $(OBJS) -o $(ELF)
+
+$(BINDIR):
+	mkdir -p $(BINDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -41,6 +57,10 @@ $(OBJDIR):
 
 # --- Cleanup ---
 clean:
-	rm -rf $(OBJDIR) $(ELF) $(TARGET)
+	rm -rf $(BUILDDIR)
 
-.PHONY: all clean
+# --- Compile flags for LSP ---
+flags:
+	echo $(CFLAGS) $(DEBUG_FLAGS) | sed -e 's/ /\n/g' > compile_flags.txt
+
+.PHONY: all debug clean flags

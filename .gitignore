@@ -3,3 +3,4 @@
 *.elf
 *.gba
 *.sav
+compile_flags.txt
