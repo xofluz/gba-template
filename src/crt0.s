@@ -16,6 +16,31 @@ _start:
     .fill 2, 1, 0           // 0x00BE: Reserved space (2 bytes)
 
 rom_header_end:
+    // --- Copy .data from ROM to EWRAM ---
+    ldr r0, =_data_lma      // source: ROM load address
+    ldr r1, =_data          // destination: EWRAM runtime address
+    ldr r2, =_data_end       // end of .data in RAM
+copy_data_loop:
+    cmp r1, r2
+    bge copy_data_done
+    ldr r3, [r0], #4
+    str r3, [r1], #4
+    b copy_data_loop
+copy_data_done:
+
+    // --- Zero .bss ---
+    ldr r0, =_bss_start
+    ldr r1, =_bss_end
+    mov r2, #0
+zero_bss_loop:
+    cmp r0, r1
+    bge zero_bss_done
+    str r2, [r0], #4
+    b zero_bss_loop
+zero_bss_done:
+
+
+
     // --- Set User Stack Pointer ---
     ldr sp, =0x03007F00
 
