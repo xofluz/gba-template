@@ -4,7 +4,8 @@
 _start:
     b rom_header_end        // 0x0000: Branch to main function (4 bytes)
     .fill 156, 1, 0         // 0x0004: Placeholder for logo (156 bytes)
-    .ascii "MWE GAME    "   // 0x00A0: Game Title (12 bytes)
+    .ascii "GBA TEMPLATE"   // 0x00A0: Game Title (12 bytes)
+    //.fill _, 1, 0           // 0x____: Padding to fill 12-byte title field (_ bytes)
     .ascii "TEST"           // 0x00AC: Game Code (4 bytes)
     .ascii "01"             // 0x00B0: Maker Code (2 bytes)
     .byte 0x96              // 0x00B2: Fast GBA byte (1 byte)
